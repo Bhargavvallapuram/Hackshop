@@ -84,7 +84,7 @@
                 </button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="settingsDropdown">
                     <a class="dropdown-item" href="#">Profile</a>
-                    <a class="dropdown-item" href="index.html">Logout</a>
+                    <a class="dropdown-item" href="/logout">Logout</a>
                 </div>
             </div>
 
@@ -122,17 +122,17 @@ $(document).ready(function() {
             </button>
             <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
                 <div class="navbar-nav mr-auto py-0">
-                    <a href="index after login.html" class="nav-item nav-link">Home</a>
+                    <a href="/" class="nav-item nav-link">Home</a>
 					<div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Services</a>
                         <div class="dropdown-menu rounded-0 m-0">
-                            <a href="service after login.html" class="dropdown-item">Work shops</a>
-                            <a href="service after login.html" class="dropdown-item">Hackthons</a>
-							<a href="service after login.html" class="dropdown-item">Meetups</a>
+                            <a href="/service" class="dropdown-item">Work shops</a>
+                            <a href="/service" class="dropdown-item">Hackthons</a>
+							<a href="/service" class="dropdown-item">Meetups</a>
 
                         </div>
                     </div>
-                    <a href="about after login.html" class="nav-item nav-link active">About</a>
+                    <a href="/about" class="nav-item nav-link active">About</a>
 					
                    					<!--
                     <a href="price.html" class="nav-item nav-link">Price</a>
@@ -149,11 +149,10 @@ $(document).ready(function() {
                         </div>
                     </div>
 					-->
-                    <a href="contact after login.html" class="nav-item nav-link">Contact Us </a>
-                    <a href="up after login.html" class="nav-item nav-link">Up Coming Events </a>
-                    <a href="Dashboard.html" class="nav-item nav-link">Dashboard </a>
+                    <a href="/contact" class="nav-item nav-link">Contact Us </a>
+                    <a href="/up" class="nav-item nav-link">Up Coming Events </a>
+                    <a href="/Dashboard" class="nav-item nav-link">Dashboard </a>
 
-                </div>
             </div>
         </nav>
     </div>
@@ -386,7 +385,7 @@ To create a global platform where students can explore innovation, creativity, a
                     </div>
                     <div class="col-md-4 mb-5">
                         <h5 class="text-primary mb-4">Newsletter</h5>
-                        <form action="">
+                        <form action="/visitor" method="post">
                             <div class="form-group">
                                 <input type="text" class="form-control border-0" placeholder="Your Name" required="required" />
                             </div>

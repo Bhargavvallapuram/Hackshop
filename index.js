@@ -109,6 +109,26 @@ app.get("/logout",(req,res)=>{
   res.redirect("/");
 });
 
+app.get("/login",(req,res)=>{
+    res.render("login.ejs");
+});
+app.get("/register",(req,res)=>{
+  res.render("register.ejs");
+});
+
+app.post("/register",(req,res)=>{
+  authro=true;
+  res.render("index after login.ejs")
+});
+
+app.post("/login",(req,res)=>{
+  res.render("index after login.ejs");
+});
+
+app.post("/forgetPassword",(req,res)=>{
+  res.render("Forgot password.ejs");
+});
+
 
 app.post("/submit-email",async(req,res)=>{
 
