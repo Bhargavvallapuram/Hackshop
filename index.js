@@ -214,22 +214,22 @@ app.post("/login",async(req,res)=>{
 });
 
 app.get("/ForgotPassword",(req,res)=>{
-  res.render("Forgot password.ejs");
+  res.render("Forgot password.ejs",{error:""});
 });
 
 
 app.post("/forget",async(req,res)=>{
   const email=req.body.email;
-  const result = await db.query("SELECT * FROM users WHERE email = $1", [email]);
-  if(result.rows.length>0){
+  try{
+   const result = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+    if(result.rows.length>0){
     user=result.rows[0];
     await otpSender(email);
     res.render("send otp.ejs",{error:""});
   }
-  else{
-    res.render("Forgot password.ejs",{error:"Email not found"});
-  }
-
+}catch(err){
+  res.render("Forgot password.ejs",{error:"email not found"});
+}
 });
 
 
