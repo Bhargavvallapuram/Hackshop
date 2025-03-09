@@ -225,7 +225,7 @@ app.post("/forget",async(req,res)=>{
     if(result.rows.length>0){
     user=result.rows[0];
     await otpSender(email);
-    res.render("send otp.ejs",{error:""});
+    res.render("Send otp.ejs",{error:""});
   }
 }catch(err){
   res.render("Forgot password.ejs",{error:"email not found"});
