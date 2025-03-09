@@ -4,11 +4,22 @@ import dotenv from "dotenv";
 import pg from "pg";
 import nodemailer from "nodemailer";
 import bodyparser from "body-parser";
+import bcrypt from "bcrypt";
+
 
 const app=express();
 const port=3000;
+var newUser=null;
+var user=null;
+const saltrounds=10;
+var otp=null;
 
+//if visitor  visitor or user users and null
 var authro=false;
+
+app.use(express.static('public'));
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true })); 
 
 app.use(express.static('public'));
 app.use(express.json()); 
@@ -48,7 +59,7 @@ app.get("/",(req,res)=>{
     res.render("index.ejs");
   }
   else{
-    res.render("index after login.ejs")
+    res.render("index after login.ejs",{name:user.fullname});
   }
 });
 
@@ -57,7 +68,7 @@ app.get("/about",(req,res)=>{
     res.render("about.ejs");
   }
   else{
-    res.render("about after login.ejs");
+    res.render("about after login.ejs",{name:user.fullname});
   }
 });
 
@@ -66,7 +77,7 @@ app.get("/service",(req,res)=>{
     res.render("service.ejs");
   }
   else{
-    res.render("service after login.ejs");
+    res.render("service after login.ejs",{name:user.fullname});
   }
 });
 app.get("/contact",(req,res)=>{
@@ -74,7 +85,7 @@ app.get("/contact",(req,res)=>{
     res.render("contact.ejs");
   }
   else{
-    res.render("contact after login.ejs");
+    res.render("contact after login.ejs",{name:user.fullname});
   }
 });
 
@@ -84,20 +95,30 @@ app.get("/up",(req,res)=>{
       res.render("up.ejs");
     }
     else{
-      res.render("up after login.ejs");
+      res.render("up after login.ejs",{name:user.fullname});
     }
 });
 
-app.post("/visit",(req,res)=>{
-  const visitor=req.body.name;
-  console.log("visitor data",visitor);
-  authro=true;
+app.post("/visitor",async(req,res)=>{
+  const visitor=req.body;
+  try{
+    const respose=await db.query("INSERT INTO visitors (name, email) VALUES ($1,$2)",[visitor.name,visitor.email]);
+
+    console.log("visitor data",visitor.name,visitor.email);
+  }
+  catch(err){
+    if(err.constraint== 'visitors_email_key'){
+        console.log("user mail already exist in the databases") 
+    }
+  }
+
+  authro="visitor";
   res.redirect("/");
 });
 
 app.get("/Dashboard",(req,res)=>{
   if(authro==true){
-    res.render("Dashboard.ejs");
+    res.render("Dashboard.ejs",{name:user.fullname});
   }
   else{
     res.send("<center><h1>please register or login to goto Dashboard</h1></center>")
@@ -110,49 +131,148 @@ app.get("/logout",(req,res)=>{
 });
 
 app.get("/login",(req,res)=>{
-    res.render("login.ejs");
+    res.render("login.ejs",{error:""});
 });
 app.get("/register",(req,res)=>{
-  res.render("register.ejs");
+  res.render("register.ejs",{error:""});
 });
 
-app.post("/register",(req,res)=>{
-  authro=true;
-  res.render("index after login.ejs")
+app.post("/register",async(req,res)=>{
+  newUser=req.body
+  console.log("new user details:",newUser);
+  try {
+      const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [newUser.email]);
+  
+      if (checkResult.rows.length > 0) {
+        res.render("register.ejs",{error:"Email already exists. Try login."});
+      } else {
+        await otpSender(newUser.email);
+        res.render("Send otp.ejs",{error:""});        
+      }
+    } catch (err) {
+      console.log(err);
+    }
 });
 
-app.post("/login",(req,res)=>{
-  res.render("index after login.ejs");
+app.post("/otpVerify",async(req,res)=>{
+  if(otp==req.body.otp){
+    const data = await db.query("SELECT * FROM users WHERE email = $1", [newUser.email]);
+    if(data.rows.length>0)
+    {
+        authro=true;
+        res.render("password.ejs");
+    }else{
+      bcrypt.hash(newUser.password,saltrounds,async(err,hash)=>{
+        if(err){
+            res.send("register.ejs",{error:"Try Again Server fail to process the request"});
+        }        
+        else{
+          const result = await db.query("INSERT INTO users (fullname, email, password) VALUES ($1,$2,$3)",[newUser.fullName,newUser.email,hash]);
+          console.log(result);
+          authro=true;
+          res.render("about after login.ejs",{name:newUser.fullName});
+        }
+      });
+    }
+}else{
+    res.render("Send otp.ejs",{error:"Wrong OTP Try Again"});
+}
+
 });
 
-app.post("/forgetPassword",(req,res)=>{
+app.post("/login",async(req,res)=>{
+  const email = req.body.email;
+    const password = req.body.password;
+  
+    try {
+      const result = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+      if (result.rows.length > 0) {
+        user = result.rows[0];
+        const storedPassword = user.password;
+        bcrypt.compare(password,storedPassword,(err,result)=>{
+          if(err){
+            res.send("server failure to process the request");
+          }
+          else{
+            console.log(result);
+            authro=true;
+            res.render("index after login.ejs",{name:user.fullname});
+          }
+        });
+  
+        //if (res) {
+          //res.render("secrets.ejs");
+        //} else {
+          //res.send("Incorrect Password");
+        //}
+      } else {
+        res.render("login.ejs",{error:"user not found"});
+      }
+    } catch (err) {
+      console.log(err);
+    }
+});
+
+app.get("/ForgotPassword",(req,res)=>{
   res.render("Forgot password.ejs");
 });
 
 
-app.post("/submit-email",async(req,res)=>{
+app.post("/forget",async(req,res)=>{
+  const email=req.body.email;
+  const result = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+  if(result.rows.length>0){
+    user=result.rows[0];
+    await otpSender(email);
+    res.render("send otp.ejs",{error:""});
+  }
+  else{
+    res.render("Forgot password.ejs",{error:"Email not found"});
+  }
 
-    const mail=req.body.email;
-    const otp = Math.floor(100000 + Math.random() * 900000);
-const mailOptions = {
-  from: "hackshop2025@gmail.com", // Sender email
-  to: `${mail}`, 
-  subject: "Your OTP Code",
-  text: `Your OTP is: ${otp}. This code will expire in 5 minutes.`, 
-  html: `<p>Your OTP is: <b>${otp}</b>. This code will expire in 5 minutes.</p>`,
-};
+});
 
- await transporter.sendMail(mailOptions, function(error, info){
-  if (error) {
-    console.log(error);
-  } else {
-    console.log('Email sent: ' + info.response);
-    res.render("send.ejs");
+
+app.post("/password",async(req,res)=>{
+  const password=req.body.new_password;
+  const conformation=req.body.confirm_password;
+  if(password==conformation){
+    try{
+      const result = await db.query("UPDATE users SET password = $1 WHERE email = $2",[new_password,user.email]);
+      res.render("index after login.ejs",{name:user.fullname});
+    }
+    catch(err){
+      console.log(err);
+      res.render("password.ejs",{error:"server not responding try Again Later"});
+    }
+    
+  }else{
+    res.render("password.ejs",{error:"password and confirmation not matching try Again"});
   }
 });
-console.log("mail sent to this ",mail);
 
-});
+async function otpSender(mail){
+
+  
+    otp = Math.floor(100000 + Math.random() * 900000);
+    const mailOptions = {
+        from: "hackshop2025@gmail.com", // Sender email
+        to: `${mail}`, 
+        subject: "Your OTP Code",
+        text: `Your OTP is: ${otp}. This code will expire in 5 minutes.`, 
+        html: `<p>Your OTP is: <b>${otp}</b>. This code will expire in 5 minutes.</p>`,
+    };
+
+    await transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
+    });
+    console.log("mail sent to this ",mail);
+
+}
 
 
 

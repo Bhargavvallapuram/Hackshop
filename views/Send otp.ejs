@@ -9,16 +9,20 @@
 </head>
 <body>
   <div class="wrapper">
-    <form action="/login" method="post">	
+    <form action="/otpVerify" method="post">	
       <div class="row">
         <i class="fas fa-user"></i>
-        <input type="text" placeholder="Enter otp" required />
+        <input type="text" placeholder="Enter otp"  name="otp" required />
       </div>
 
       <div class="row button">
         <input type="submit" value="submit" />
       </div>
+      
     </form>
+    <% if(error){  %>
+      <center><p style="color: red;"><%=error %></p></center>
+    <% } %>
   </div>
 </body>
 </html>
