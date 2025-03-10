@@ -53,19 +53,18 @@ db.connect()
     console.log("error in connecting to databases",err);
   });
 
-
-app.get("/",(req,res)=>{
-  if(authro==false){
+app.get("/", (req, res) => {
+  if (!authro) {  // Changed authro==false to !authro for cleaner syntax
     res.render("index.ejs");
+  } else {
+    if (user != null) {
+      res.render("index after login.ejs", { name: user.fullname });
+    } else {
+      res.render("index after login.ejs", { name: "" });
+    }
   }
-  else{
-   if(user!=null){
-    res.render("index after login.ejs",{name:user.fullname});
-}
-else{
-       res.render("index after login.ejs",{name:""});
-  }
-});
+});  // Added missing closing curly brace
+
 
 app.get("/about",(req,res)=>{
   if(authro==false){
