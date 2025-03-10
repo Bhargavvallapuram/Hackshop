@@ -61,7 +61,8 @@ app.get("/",(req,res)=>{
   else{
    if(user!=null){
     res.render("index after login.ejs",{name:user.fullname});
-}else{
+}
+else{
        res.render("index after login.ejs",{name:""});
   }
 });
