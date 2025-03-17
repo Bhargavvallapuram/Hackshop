@@ -59,7 +59,7 @@ app.get("/",(req,res)=>{
     res.render("index.ejs");
   }
   else{
-    res.render("index after login.ejs",{name:user.fullnamex});
+    res.render("index after login.ejs",{name:user.fullname});
   }
 });
 
@@ -157,10 +157,11 @@ app.post("/register",async(req,res)=>{
 app.post("/otpVerify",async(req,res)=>{
   if(otp==req.body.otp){
     //solve the error  when existing user forget password
+    let data;
     if (newUser!=null){
-      const data = await db.query("SELECT * FROM users WHERE email = $1", [newUser.email]);
+      data = await db.query("SELECT * FROM users WHERE email = $1", [newUser.email]);
     }else{
-      const data = await db.query("SELECT * FROM users WHERE email = $1", [user.email]);
+      data = await db.query("SELECT * FROM users WHERE email = $1", [user.email]);
     }
     if(data.rows.length>0)
     {

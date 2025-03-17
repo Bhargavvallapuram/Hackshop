@@ -25,12 +25,22 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
-	<style>
-	.width{
-		top-margin:100px;
-	
-	}
-	</style>
+
+<style>
+  .email-button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+    border: 0px solid black;
+  }
+
+  .email-button:hover {
+  }
+</style>
+
 </head>
 
 <body>
@@ -73,8 +83,6 @@
 <div class="col-lg-8 text-center text-lg-right">
     <div class="d-inline-flex align-items-center">
         <div class="d-inline-flex flex-column text-center px-3 border-right">
-            <h6>Email Us</h6>
-            <p class="m-0">hackshop2025@gmail.com</p>
         </div>
         <!--
         <div class="d-inline-flex flex-column text-center pl-3">
@@ -98,16 +106,16 @@
     <div class="container-fluid p-0">
         <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 py-lg-0 px-lg-5">
             <a href="" class="navbar-brand d-block d-lg-none">
-                <h1 class="m-0 display-5 text-capitalize font-italic text-white"><span class="text-primary">HACK&nbsp;</span>SHOP</h1>
+                <h1 class="m-0 display-5 text-capitalize font-italic text-white"><span class="text-primary">HACK</span>SHOP</h1>
             </a>
             <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
                 <div class="navbar-nav mr-auto py-0">
-                    <a href="/" class="nav-item nav-link active">Home</a>
+                    <a href="/" class="nav-item nav-link">Home</a>
 					<div class="nav-item dropdown">
-                        <a href="/service" class="nav-link dropdown-toggle" data-toggle="dropdown">Services</a>
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Services</a>
                         <div class="dropdown-menu rounded-0 m-0">
                             <a href="/service" class="dropdown-item">Work shops</a>
                             <a href="/service" class="dropdown-item">Hackthons</a>
@@ -132,14 +140,13 @@
                         </div>
                     </div>
 					-->
-                    <a href="/contact" class="nav-item nav-link">Contact Us </a>
+                    <a href="/contact" class="nav-item nav-link active">Contact Us </a>
                     <a href="/up" class="nav-item nav-link">Up Coming Events </a>
                 </div>
             </div>
         </nav>
     </div>
     <!-- Navbar End -->
-    <!--
 
     <!-- Carousel Start 
     <div class="container-fluid p-0">
@@ -182,7 +189,7 @@
             </a>
         </div>
     </div>
-    <!-- Carousel End -->
+     Carousel End -->
 
 
     <!-- Booking Start -->
@@ -279,12 +286,7 @@ To create a global platform where students can explore innovation, creativity, a
             </div>
             <div class="col-lg-5">
                 <div class="row px-3">
-                    <div class="col-12 p-0">
-                        <img style="width:300px;" src="img/a9.webp" alt="">
-						<br><br><br>
-						<img style="top-padding:50px;width:300px;" src="img/a10.webp" alt="">
-
-                    </div>
+ 
            
                 </div>
             </div>
@@ -785,12 +787,23 @@ To create a global platform where students can explore innovation, creativity, a
     <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
     <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>-->
 
-    <!-- Contact Javascript File -->
-    <script src="mail/jqBootstrapValidation.min.js"></script>
-    <script src="mail/contact.js"></script>
+    
 
-    <!-- Template Javascript -->
-    <script src="js/main.js"></script>
+     <!-- JavaScript Libraries -->
+     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+     <script src="lib/easing/easing.min.js"></script>
+     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+     <script src="lib/tempusdominus/js/moment.min.js"></script>
+     <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
+     <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+ 
+     <!-- Contact Javascript File -->
+     <script src="mail/jqBootstrapValidation.min.js"></script>
+     <script src="mail/contact.js"></script>
+ 
+     <!-- Template Javascript -->
+     <script src="js/main.js"></script>
 </body>
 
 </html>
